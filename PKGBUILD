@@ -10,14 +10,14 @@
 
 _qt_module=qtwinextras
 pkgname=mingw-w64-qt5-winextras
-pkgver=5.15.13
+pkgver=5.15.14
 pkgrel=1
 arch=('any')
 pkgdesc="Classes and functions that enable you to use Windows-specific functions (mingw-w64)"
 depends=('mingw-w64-qt5-base' 'mingw-w64-qt5-declarative')
 makedepends=('mingw-w64-gcc' 'mingw-w64-pkg-config')
 license=('GPL3' 'LGPL3' 'LGPL2.1' 'FDL' 'custom')
-_commit=e6a85ae3306867400b8700600152949656eb21f7
+_commit=907009a4f7e5d2b99805547caf4b901bdbb0d4d6
 _basever=${pkgver%%+*}
 makedepends+=('git')
 options=('!strip' '!buildflags' 'staticlibs')
@@ -25,7 +25,7 @@ groups=('mingw-w64-qt5')
 url='https://www.qt.io/'
 _pkgfqn=${_qt_module}
 source=(git+https://invent.kde.org/qt/qt/$_pkgfqn#commit=$_commit)
-sha256sums=('a489c58f1620d0cabc7c47343119a6881af9f47a832a3e98389952c3366cc29a')
+sha256sums=('de75e02bd4fd260f32a69b8f41c4a0ff8028f64bcb20a3208e3e0b727d3dbe70')
 
 _architectures='i686-w64-mingw32 x86_64-w64-mingw32'
 
@@ -48,7 +48,7 @@ build() {
       msg2 "Building ${_config##*=} version for ${_arch}"
       mkdir -p build-${_arch}-${_config##*=} && pushd build-${_arch}-${_config##*=}
       ${_arch}-qmake-qt5 ../${_qt_module}.pro ${_config} ${_additional_qmake_args}
-      make -j$(nproc)
+      make
       popd
     done
   done
@@ -61,7 +61,7 @@ package() {
     for _config in "${_configurations[@]}"; do
       pushd build-${_arch}-${_config##*=}
 
-      make -j$(nproc) INSTALL_ROOT="$pkgdir" install
+      make INSTALL_ROOT="$pkgdir" install
 
       # use prl files from build directory since installed prl files seem to have incorrect QMAKE_PRL_LIBS_FOR_CMAKE
       if [[ -d 'lib' ]]; then
